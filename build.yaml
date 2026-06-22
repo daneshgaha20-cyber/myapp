@@ -1,40 +1,31 @@
+---
 name: Build Android APK
-
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
-
+    branches:
+      - main
+  workflow_dispatch: null
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-
+          python-version: "3.9"
       - name: Install dependencies
-        run: |
+        run: >
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
       - name: Install Buildozer and Cython
         run: |
           pip install --upgrade pip
           pip install Cython==0.29.33 buildozer
-
       - name: Build with Buildozer
         run: |
-          # توجه: حتما باید فایل buildozer.spec قبلا در مخزن شما وجود داشته باشد
           buildozer -v android debug
-
       - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-apk
-          path: bin/*.apk
+        uses: actions/
