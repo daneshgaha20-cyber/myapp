@@ -9,7 +9,11 @@ from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
 from kivy.uix.spinner import Spinner
 from kivy.core.window import Window
 
-Window.size = (400, 700)
+# ====== اصلاح خط ۱۴ (حذف Window.size و جایگزینی با Config) ======
+from kivy.config import Config
+Config.set('graphics', 'width', '400')
+Config.set('graphics', 'height', '700')
+Config.set('graphics', 'resizable', False)
 
 class StressAnalyzerApp(App):
     def build(self):
