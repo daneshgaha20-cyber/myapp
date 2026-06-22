@@ -1,37 +1,40 @@
-name: Build APK
+name: Build Android APK
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # این خط اضافه شد تا بتوانید به‌صورت دستی هم اجرا کنید
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-      
+          python-version: '3.9'
+
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install buildozer cython
-          sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk
-      
-      - name: Build APK
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+      - name: Install Buildozer and Cython
         run: |
-          buildozer init
-          sed -i 's/title = .*/title = Drought Stress RF/' buildozer.spec
-          sed -i 's/package.name = .*/package.name = droughtstressrf/' buildozer.spec
-          buildozer android debug
-      
+          pip install --upgrade pip
+          pip install Cython==0.29.33 buildozer
+
+      - name: Build with Buildozer
+        run: |
+          # توجه: حتما باید فایل buildozer.spec قبلا در مخزن شما وجود داشته باشد
+          buildozer -v android debug
+
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: drought-stress-app
+          name: android-apk
           path: bin/*.apk
